@@ -1,0 +1,4 @@
+1. fix error message when no faces exist :) 
+2. enchance timing
+3. add gui (pyqt or tkinter)
+4. package with Pyinstaller 
