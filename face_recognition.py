@@ -5,6 +5,16 @@ import os
 # Load Haar Cascade Classifier
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
+# Function to display timing 
+def display_timing_metrics(start_time, end_time, frame_count=None):
+    elapsed_time = end_time - start_time
+    if frame_count:
+        avg_time_per_frame = elapsed_time / frame_count
+        print(f"Processed {frame_count} frames in {elapsed_time:.2f} seconds.")
+        print(f"Average time per frame: {avg_time_per_frame:.2f} seconds.")
+    else:
+        print(f"Processing completed in {elapsed_time:.2f} seconds.")
+
 # Function to detect faces in an image
 def detect_faces_image(image_path):
     try:
@@ -33,9 +43,11 @@ def detect_faces_image(image_path):
 
         if len(faces) == 0:
             print("No faces detected in the image.")
-            return
+        else:
+            print(f"Detected {len(faces)} face(s).")
 
-        print(f"Face detection took {end_time - start_time:.2f} seconds.")
+        # Display timing 
+        display_timing_metrics(start_time, end_time)
 
         # Draw rectangles around detected faces
         for (x, y, w, h) in faces:
@@ -63,6 +75,9 @@ def detect_faces_video(video_path):
             print("Error: Could not open the video file.")
             return
 
+        frame_count = 0
+        start_time = time.time()
+
         while True:
             ret, frame = cap.read()
             if not ret:
@@ -72,20 +87,13 @@ def detect_faces_video(video_path):
             # Convert frame to grayscale
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            # Start timing
-            start_time = time.time()
-
             # Detect faces
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-            # End timing
-            end_time = time.time()
-
             if len(faces) == 0:
                 print("No faces detected in this frame.")
-                continue
-
-            print(f"Frame processed in {end_time - start_time:.2f} seconds.")
+            else:
+                print(f"Detected {len(faces)} face(s) in this frame.")
 
             # Draw rectangles around detected faces
             for (x, y, w, h) in faces:
@@ -94,9 +102,15 @@ def detect_faces_video(video_path):
             # Display the frame
             cv2.imshow("Detected Faces - Video", frame)
 
+            frame_count += 1
+
             # Break on 'q' key press
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+
+        end_time = time.time()
+
+        display_timing_metrics(start_time, end_time, frame_count)
 
         cap.release()
         cv2.destroyAllWindows()
@@ -113,6 +127,9 @@ def detect_faces_webcam():
             print("Error: Could not access the webcam.")
             return
 
+        frame_count = 0
+        start_time = time.time()
+
         while True:
             ret, frame = cap.read()
             if not ret:
@@ -122,20 +139,13 @@ def detect_faces_webcam():
             # Convert frame to grayscale
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            # Start timing
-            start_time = time.time()
-
             # Detect faces
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-            # End timing
-            end_time = time.time()
-
             if len(faces) == 0:
                 print("No faces detected in this frame.")
-                continue
-
-            print(f"Frame processed in {end_time - start_time:.2f} seconds.")
+            else:
+                print(f"Detected {len(faces)} face(s) in this frame.")
 
             # Draw rectangles around detected faces
             for (x, y, w, h) in faces:
@@ -144,9 +154,15 @@ def detect_faces_webcam():
             # Display the frame
             cv2.imshow("Detected Faces - Webcam", frame)
 
+            frame_count += 1
+
             # Break on 'q' key press
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+
+        end_time = time.time()
+
+        display_timing_metrics(start_time, end_time, frame_count)
 
         cap.release()
         cv2.destroyAllWindows()
