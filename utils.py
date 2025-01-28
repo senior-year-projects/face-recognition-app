@@ -29,16 +29,6 @@ def validate_file_path(file_path):
         return False, f"File '{file_path}' does not exist."
     return True, None
 
-def validate_video_format(file_path):
-    """
-    Validate if the given file path is valid
-    """
-    valid_extensions = [".mp4", ".avi", ".mov", ".mkv"]
-    _, ext = os.path.splitext(file_path)
-    if ext.lower() not in valid_extensions:
-        return False, f"Invalid video format '{ext}'. Supported formats: {', '.join(valid_extensions)}."
-    return True, None
-
 def validate_image_format(file_path):
     """
     Validate if the given file path is valid
@@ -75,26 +65,6 @@ def capture_frame_from_webcam():
             break
     video_capture.release()
     cv2.destroyAllWindows()
-    return frame
-
-def extract_frame_from_video(video_path):
-    """
-    Extract the first frame from a video file
-    """
-    valid, error = validate_file_path(video_path)
-    if not valid:
-        display_error(error)
-        return None
-    valid, error = validate_video_format(video_path)
-    if not valid:
-        display_error(error)
-        return None
-    video_capture = cv2.VideoCapture(video_path)
-    ret, frame = video_capture.read()
-    if not ret:
-        display_error("Failed to read video file.")
-        return None
-    video_capture.release()
     return frame
 
 def load_image(image_path):

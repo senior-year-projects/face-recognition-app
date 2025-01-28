@@ -40,25 +40,6 @@ def detect_faces(input_source="webcam", file_path=None):
         face_locations = main.face_locations(frame)
         return face_locations, frame
 
-    elif input_source == "video" and file_path:
-        video_capture = cv2.VideoCapture(file_path)
-        while video_capture.isOpened():
-            ret, frame = video_capture.read()
-            if not ret:
-                break
-
-            face_locations = main.face_locations(frame)
-            for (top, right, bottom, left) in face_locations:
-                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-
-            cv2.imshow("Video Face Detection", frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        video_capture.release()
-        cv2.destroyAllWindows()
-        return face_locations, None
-
     else:
         raise ValueError("Invalid input source or missing file path.")
 
